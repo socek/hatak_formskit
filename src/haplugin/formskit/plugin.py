@@ -10,9 +10,8 @@ class FormPlugin(Plugin):
     def __init__(self, widget=FormWidget):
         self.widget = widget
 
-    def add_controller_plugins(self, plugins):
-        FormControllerPlugin.widget = self.widget
-        plugins.append(FormControllerPlugin)
+    def add_controller_plugins(self):
+        self.add_controller_plugin(FormControllerPlugin)
 
     def validate_plugin(self):
         self.app._validate_dependency_plugin(Jinja2Plugin)
@@ -25,5 +24,5 @@ class FormControllerPlugin(ControllerPlugin):
 
     def add_form(self, formcls, name='form', *args, **kwargs):
         form = formcls(self.request, *args, **kwargs)
-        self.controller.add_helper(name, self.widget, form)
+        self.controller.add_helper(name, self.parent.widget, form)
         return form
