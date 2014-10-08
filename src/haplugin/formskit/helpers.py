@@ -51,6 +51,9 @@ class FormWidget(Jinja2HelperMany):
         data['value'] = self.form.get_value(name) or ''
         return self.render_for('hidden.jinja2', data)
 
+    def csrf_token(self):
+        return self.hidden('csrf_token')
+
     def submit(self, label='', cls='btn-success', base_cls='btn btn-lg'):
         return self.render_for(
             'submit.jinja2', {

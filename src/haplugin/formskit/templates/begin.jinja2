@@ -7,3 +7,4 @@
     {%- if id %} id="{{id}}"{% endif -%}
     >
     <input type="hidden" name="form_name" value="{{name}}" />
+    {{widget.csrf_token()}}
