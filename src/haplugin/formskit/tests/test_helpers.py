@@ -32,7 +32,7 @@ class FormWidgetTestCase(TestCase):
             {
                 'action': self.form.action,
                 'id': 'fake_id',
-                'name': self.form.name,
+                'name': self.form.get_name(),
                 'style': 'mystyle',
             },)
 
@@ -49,16 +49,18 @@ class FormWidgetTestCase(TestCase):
     def test_hidden(self):
         """hidden should render <input type="hidden"> tag"""
         result = self.widget.hidden('myname')
+        field = self.form.fields['myname']
 
         self.assert_render_for(
             result,
             'hidden.jinja2',
             {
-                'name': 'myname',
-                'value': self.form.get_value.return_value
+                'name': field.get_name().decode(),
+                'value': self.form.get_value.return_value,
+                'field': field,
             },)
 
-        self.form.get_value.assert_called_once_with('myname')
+        self.form.get_value.assert_called_once_with('myname', default='')
 
     def test_submit(self):
         """submit should render <input type="submit"> tag"""
@@ -75,14 +77,15 @@ class FormWidgetTestCase(TestCase):
 
     def test_error(self):
         """error should render form error html"""
+        self.add_mock_object(self.widget, '_translate')
         result = self.widget.error()
 
         self.assert_render_for(
             result,
             'error.jinja2',
             {
-                'error': self.form.error,
-                'message': self.form.message,
+                'error': False,
+                'message': self.widget._translate.return_value,
             },)
 
     def test_text(self):
@@ -98,30 +101,32 @@ class FormWidgetTestCase(TestCase):
         self._input_test('select')
 
     def _input_test(self, name, method_name=None):
-        self.form.field_patterns = {
-            'myname': 'fake field',
-        }
         method_name = method_name or name
+        input_name = 'myname'
+        self.add_mock_object(self.widget, '_translate')
 
         method = getattr(self.widget, method_name)
-        result = method('myname', True, False)
+        result = method(input_name, True, False)
+        field = self.form.fields[name]
 
         self.assert_render_for(
             result,
             name + '.jinja2',
             {
-                'name': 'myname',
-                'id': '%s_myname' % (self.form.name),
-                'label': self.form.get_label.return_value,
-                'error': self.form.get_error.return_value,
-                'message': self.form.get_message.return_value,
+                'name': field.get_name().decode(),
                 'value': self.form.get_value.return_value,
+                'field': field,
+                'id': '%s_myname' % (self.form.get_name()),
+                'label': field.label,
+                'error': field.error,
+                'messages': [
+                    self.widget._translate(message)
+                    for message in field.messages
+                ],
+                'value_message': self.widget._translate(
+                    field.get_value_error.return_value
+                ),
+
                 'disabled': True,
                 'autofocus': False,
-                'field': 'fake field',
             },)
-
-        self.form.get_label.assert_called_once_with('myname')
-        self.form.get_error.assert_called_once_with('myname')
-        self.form.get_message.assert_called_once_with('myname')
-        self.form.get_value.assert_called_once_with('myname')

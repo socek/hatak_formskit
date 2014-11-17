@@ -1,6 +1,6 @@
 <div class="form-group">
     <label>{{label}}:</label>
-    {%- if error %} <div class="label label-danger">{{message}}</div>{%- endif -%}
+    {% include '_error.jinja2' %}
 
     <select class="form-control" name="{{name}}" id="{{id}}" {%- if disabled %} disabled=disabled {% endif -%}>
         {% for element in field.data %}
