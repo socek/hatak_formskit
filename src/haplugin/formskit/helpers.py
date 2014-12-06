@@ -36,7 +36,7 @@ class FormWidget(Jinja2HelperMany):
 
     def _base_input(self, name):
         data = {}
-        data['name'] = self.form.fields[name].get_name().decode('utf8')
+        data['name'] = self.form.fields[name].get_name()
         data['value'] = self.form.get_value(name, default='')
         data['field'] = self.form.fields[name]
         return data

@@ -55,7 +55,7 @@ class FormWidgetTestCase(TestCase):
             result,
             'hidden.jinja2',
             {
-                'name': field.get_name().decode(),
+                'name': field.get_name(),
                 'value': self.form.get_value.return_value,
                 'field': field,
             },)
@@ -113,7 +113,7 @@ class FormWidgetTestCase(TestCase):
             result,
             name + '.jinja2',
             {
-                'name': field.get_name().decode(),
+                'name': field.get_name(),
                 'value': self.form.get_value.return_value,
                 'field': field,
                 'id': '%s_myname' % (self.form.get_name()),
