@@ -3,7 +3,7 @@
     {% include '_error.jinja2' %}
 
     <select class="form-control" name="{{name}}" id="{{id}}" {%- if disabled %} disabled=disabled {% endif -%}>
-        {% for element in field.data %}
+        {% for element in field.data() %}
             <option value="{{element['value']}}"
                 {%- if element['value'] == value%} selected{% endif -%}
             >{{element['label']}}</option>

@@ -10,7 +10,7 @@
             {%- if disabled %} disabled=disabled {% endif -%}
             >
     <ul id="{{id}}_list">
-        {%- for element in field.data -%}
+        {%- for element in field.data() -%}
             {%- if element['value'] != '' -%}
                 <li>{{element['label']}}</li>
             {%- endif -%}
