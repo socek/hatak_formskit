@@ -1,12 +1,12 @@
 {% if error %}
     {% for message in messages %}
         <div class="label label-danger">
-            {{message()}}
+            {{message}}
         </div>
     {% endfor %}
-    {% if value_message %}
+    {% for message in value_messages %}
         <div class="label label-danger">
-            {{value_message()}}
+            {{message}}
         </div>
-    {% endif %}
+    {% endfor %}
 {% endif %}

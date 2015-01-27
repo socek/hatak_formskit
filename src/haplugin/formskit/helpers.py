@@ -1,5 +1,3 @@
-from formskit.messages import Message
-
 from haplugin.jinja2 import Jinja2HelperMany
 
 
@@ -48,11 +46,8 @@ class FormWidget(Jinja2HelperMany):
         data['id'] = self.get_id(name)
         data['label'] = field.label
         data['error'] = field.error
-        data['messages'] = [
-            self._translate(message) for message in field.messages
-        ]
-        data['value_message'] = self._translate(
-            field.get_value_error(default=None))
+        data['messages'] = field.get_error_messages()
+        data['value_messages'] = field.get_value_errors(default=[])
         data['disabled'] = disabled
         data['autofocus'] = autofocus
         return self.render_for(input_type + '.jinja2', data)
@@ -74,12 +69,5 @@ class FormWidget(Jinja2HelperMany):
     def error(self):
         data = {}
         data['error'] = True if self.form.success is False else False
-        data['message'] = self._translate(self.form.message)
+        data['messages'] = self.form.get_error_messages()
         return self.render_for('error.jinja2', data)
-
-    def _translate(self, message):
-        if message:
-            cls = self.settings.get('form_message', Message)
-            return cls(message)
-        else:
-            return None

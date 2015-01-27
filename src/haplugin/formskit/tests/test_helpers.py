@@ -77,7 +77,6 @@ class FormWidgetTestCase(TestCase):
 
     def test_error(self):
         """error should render form error html"""
-        self.add_mock_object(self.widget, '_translate')
         result = self.widget.error()
 
         self.assert_render_for(
@@ -85,7 +84,7 @@ class FormWidgetTestCase(TestCase):
             'error.jinja2',
             {
                 'error': False,
-                'message': self.widget._translate.return_value,
+                'messages': self.form.get_error_messages.return_value,
             },)
 
     def test_text(self):
@@ -103,7 +102,6 @@ class FormWidgetTestCase(TestCase):
     def _input_test(self, name, method_name=None):
         method_name = method_name or name
         input_name = 'myname'
-        self.add_mock_object(self.widget, '_translate')
 
         method = getattr(self.widget, method_name)
         result = method(input_name, True, False)
@@ -119,14 +117,14 @@ class FormWidgetTestCase(TestCase):
                 'id': '%s_myname' % (self.form.get_name()),
                 'label': field.label,
                 'error': field.error,
-                'messages': [
-                    self.widget._translate(message)
-                    for message in field.messages
-                ],
-                'value_message': self.widget._translate(
-                    field.get_value_error.return_value
+                'messages': (
+                    self.form.fields.__getitem__.return_value
+                    .get_error_messages.return_value
                 ),
-
+                'value_messages': (
+                    self.form.fields.__getitem__.return_value
+                    .get_value_errors.return_value
+                ),
                 'disabled': True,
                 'autofocus': False,
             },)

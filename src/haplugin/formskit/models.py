@@ -3,6 +3,7 @@ from hatak.unpackrequest import unpack
 
 from formskit import Form
 from formskit.formvalidators import FormValidator
+from formskit.translation import Translation
 
 
 class PostForm(Form):
@@ -23,8 +24,12 @@ class PostForm(Form):
         self.add_field('csrf_token')
         self.set_value('csrf_token', self.session.get_csrf_token())
 
-    def __call__(self):
-        return super().__call__(self.request.POST.dict_of_lists())
+    def validate(self):
+        return super().validate(self.request.POST.dict_of_lists())
+
+    @property
+    def translation_class(self):
+        return self.settings.get('form_message', Translation)
 
 
 class CsrfMustMatch(FormValidator):
