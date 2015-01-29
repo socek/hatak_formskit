@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'hatak>=0.2.1',
-    'formskit>=0.5.4',
+    'formskit>=0.5.4.2',
     'hatak_jinja2',
     'hatak_beaker',
     'hatak_toster',
@@ -12,7 +12,7 @@ install_requires = [
 if __name__ == '__main__':
     setup(
         name='Hatak_Formskit',
-        version='0.2.3',
+        version='0.2.3.1',
         description='Formskit plugin for Hatak.',
         license='Apache License 2.0',
         packages=find_packages('src'),
