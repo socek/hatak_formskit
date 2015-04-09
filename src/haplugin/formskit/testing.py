@@ -6,7 +6,7 @@ from hatak.testing import RequestFixture
 
 class FormFixture(RequestFixture):
 
-    def _get_controller_class(self):
+    def _get_form_class(self):
         pass
 
     @yield_fixture
@@ -16,7 +16,7 @@ class FormFixture(RequestFixture):
 
     @fixture
     def form(self, request):
-        cls = self._get_controller_class()
+        cls = self._get_form_class()
         form = cls(request)
         defaults = {
             form.form_name_value: [form.get_name(), ]
@@ -81,3 +81,15 @@ class FormWidgetFixture(RequestFixture):
     def assert_render_for(self, result, render_for, *args, **kwargs):
         assert result == render_for.return_value
         render_for.assert_called_once_with(*args, **kwargs)
+
+
+class FormControllerFixture(object):
+
+    @yield_fixture
+    def add_form(self, controller):
+        with patch.object(controller, 'add_form', autospec=True) as mock:
+            yield mock
+
+    @fixture
+    def form(self, add_form):
+        return add_form.return_value
