@@ -47,7 +47,15 @@ class FormWidgetFixture(RequestFixture):
         with patch.object(widget, 'render_for', autospec=True) as mock:
             yield mock
 
-    def _input_test(self, render_for, widget, form, name, method_name=None):
+    def _input_test(
+        self,
+        render_for,
+        widget,
+        form,
+        name,
+        method_name=None,
+        **kwargs
+    ):
         method_name = method_name or name
         input_name = 'myname'
 
@@ -62,6 +70,7 @@ class FormWidgetFixture(RequestFixture):
             {
                 'name': field.get_name(),
                 'value': form.get_value.return_value,
+                'values': form.get_values.return_value,
                 'field': field,
                 'id': '%s_myname' % (form.get_name()),
                 'label': field.label,
@@ -76,7 +85,9 @@ class FormWidgetFixture(RequestFixture):
                 ),
                 'disabled': True,
                 'autofocus': False,
-            },)
+            },
+            **kwargs
+        )
 
     def assert_render_for(self, result, render_for, *args, **kwargs):
         assert result == render_for.return_value

@@ -36,10 +36,18 @@ class FormWidget(Jinja2HelperMany):
         data = {}
         data['name'] = self.form.fields[name].get_name()
         data['value'] = self.form.get_value(name, default='')
+        data['values'] = self.form.get_values(name)
         data['field'] = self.form.fields[name]
         return data
 
-    def _input(self, input_type, name, disabled=False, autofocus=False):
+    def _input(
+        self,
+        input_type,
+        name,
+        disabled=False,
+        autofocus=False,
+        prefix=None
+    ):
         data = self._base_input(name)
         field = data['field']
 
@@ -50,7 +58,7 @@ class FormWidget(Jinja2HelperMany):
         data['value_messages'] = field.get_value_errors(default=[])
         data['disabled'] = disabled
         data['autofocus'] = autofocus
-        return self.render_for(input_type + '.jinja2', data)
+        return self.render_for(input_type + '.jinja2', data, prefix=prefix)
 
     def hidden(self, name):
         data = self._base_input(name)
