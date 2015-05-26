@@ -54,38 +54,43 @@ class FormWidgetFixture(RequestFixture):
         form,
         name,
         method_name=None,
+        external=None,
         **kwargs
     ):
         method_name = method_name or name
         input_name = 'myname'
+        external = external or {}
 
         method = getattr(widget, method_name)
         result = method(input_name, True, False)
         field = form.fields[name]
 
+        data = {
+            'name': field.get_name(),
+            'value': form.get_value.return_value,
+            'values': form.get_values.return_value,
+            'field': field,
+            'id': '%s_myname' % (form.get_name()),
+            'label': field.label,
+            'error': field.error,
+            'messages': (
+                form.fields.__getitem__.return_value
+                .get_error_messages.return_value
+            ),
+            'value_messages': (
+                form.fields.__getitem__.return_value
+                .get_value_errors.return_value
+            ),
+            'disabled': True,
+            'autofocus': False,
+        }
+        data.update(external)
+
         self.assert_render_for(
             result,
             render_for,
             name + '.jinja2',
-            {
-                'name': field.get_name(),
-                'value': form.get_value.return_value,
-                'values': form.get_values.return_value,
-                'field': field,
-                'id': '%s_myname' % (form.get_name()),
-                'label': field.label,
-                'error': field.error,
-                'messages': (
-                    form.fields.__getitem__.return_value
-                    .get_error_messages.return_value
-                ),
-                'value_messages': (
-                    form.fields.__getitem__.return_value
-                    .get_value_errors.return_value
-                ),
-                'disabled': True,
-                'autofocus': False,
-            },
+            data,
             **kwargs
         )
 

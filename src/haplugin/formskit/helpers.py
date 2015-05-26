@@ -46,7 +46,8 @@ class FormWidget(Jinja2HelperMany):
         name,
         disabled=False,
         autofocus=False,
-        prefix=None
+        prefix=None,
+        **kwargs
     ):
         data = self._base_input(name)
         field = data['field']
@@ -58,6 +59,7 @@ class FormWidget(Jinja2HelperMany):
         data['value_messages'] = field.get_value_errors(default=[])
         data['disabled'] = disabled
         data['autofocus'] = autofocus
+        data.update(kwargs)
         return self.render_for(input_type + '.jinja2', data, prefix=prefix)
 
     def hidden(self, name):
